@@ -1035,7 +1035,7 @@ str = temp;
 temp = null;
 ```
 
-#### 内存分配
+### 内存分配
 1. 简单数据类型 存放在栈里面 里面直接开辟一个空间存放的是值
 2. 复杂数据类型 首先在栈里面存放地址 十六进制表示  然后这个地址指向堆里面的数据
 
@@ -1043,6 +1043,8 @@ temp = null;
 
 ## DOM
 DOM（Document Object Model——文档对象模型）是用来呈现以及与任意 HTML 或 XML 文档交互的 API。DOM 是载入到浏览器中的文档模型，以节点树的形式来表现文档，每个节点代表文档的构成部分（例如：页面元素、字符串或注释等等）。
+
+## 获取元素
 
 ### 获取元素 getElementById 接口
 ```html
@@ -1080,4 +1082,295 @@ console.log(ol[0].getElementsByTagName('li'));
 
 var ol = document.getElementById('ol');  // 通过ID获取
 console.log(ol[0].getElementsByTagName('li'));
+```
+
+### 根据类名获取元素
+```html
+<div class="box">盒子1</div>
+<div class="box">盒子2</div>
+<div id="nav">
+	<ul>
+		<li>首页</li>
+		<li>产品</li>
+	</ul>
+</div>
+<script>
+	// 1. getElementsByClassName 根据类名获得某些元素集合
+	var boxs = document.getElementsByClassName('box');
+	console.log(boxs);
+
+	// 2. querySelector 返回指定选择器的第一个元素对象  切记 里面的选择器需要加符号 .box  #nav
+	var firstBox = document.querySelector('.box');
+	console.log(firstBox);
+	var nav = document.querySelector('#nav');
+	console.log(nav);
+	var li = document.querySelector('li');
+	console.log(li);
+
+	// 3. querySelectorAll()返回指定选择器的所有元素对象集合
+	var allBox = document.querySelectorAll('.box');
+	console.log(allBox);
+	var lis = document.querySelectorAll('li');
+	console.log(lis);
+</script>
+```
+
+### 获取 body 和 html 标签
+```js
+// 1.获取body 元素
+var bodyEle = document.body;
+console.log(bodyEle);
+console.dir(bodyEle);
+
+// 2.获取html 元素
+var htmlEle = document.documentElement;
+console.log(htmlEle);
+```
+
+## 事件
+事件是有三部分组成  事件源  事件类型  事件处理程序   我们也称为事件三要素
+- 事件源 事件被触发的对象
+- 事件类型  如何触发 什么事件 比如鼠标点击(onclick) 还是鼠标经过 还是键盘按下
+- 事件处理程序  通过一个函数赋值的方式 完成
+```html
+<button id="btn">唐伯虎</button>
+    <script>
+		var btn = document.getElementById('btn');  // 事件源:btn
+		btn.onclick = function() {
+            alert('点秋香');
+        }
+	</script>
+```
+
+### 执行事件步骤
+1. 获取事件源
+2. 绑定事件 注册事件
+3. 添加事件处理程序
+```js
+var div = document.querySelector('div');
+div.onclick
+div.onclick = function() {
+	console.log('我被选中了');
+}
+```
+
+## 操作元素
+
+### 改变元素内容
+```html
+<button>显示当前系统时间</button>
+<div>某个时间</div>
+<p>1123</p>
+<script>
+	// 当我们点击了按钮，  div里面的文字会发生变化
+	// 1. 获取元素 
+	var btn = document.querySelector('button');
+	var div = document.querySelector('div');
+	// 2.注册事件
+	btn.onclick = function() {
+		// div.innerText = '2019-6-6';
+		div.innerHTML = getDate();  // getDate是自定义函数
+	}
+</script>
+```
+
+### 读写元素内容
+```html
+<p>
+	我是文字
+	<span>123</span>
+</p>
+<script>
+	// innerText 和 innerHTML的区别 
+	// 1. innerText 不识别html标签 非标准  去除空格和换行
+	var div = document.querySelector('div');
+	// div.innerText = '<strong>今天是：</strong> 2019';
+	// 2. innerHTML 识别html标签 W3C标准 保留空格和换行的
+	div.innerHTML = '<strong>今天是：</strong> 2019';
+	// 这两个属性是可读写的  可以获取元素里面的内容
+	var p = document.querySelector('p');
+	console.log(p.innerText);
+	console.log(p.innerHTML);
+</script>
+```
+
+### 改变元素属性
+```html
+<button id="ldh">刘德华</button>
+<button id="zxy">张学友</button> <br>
+<img src="images/ldh.jpg" alt="" title="刘德华">
+
+<script>
+	// 修改元素属性  src
+	// 1. 获取元素
+	var ldh = document.getElementById('ldh');
+	var zxy = document.getElementById('zxy');
+	var img = document.querySelector('img');
+	// 2. 注册事件  处理程序
+	zxy.onclick = function() {
+		img.src = 'images/zxy.jpg';
+		img.title = '张学友思密达';
+	}
+	ldh.onclick = function() {
+		img.src = 'images/ldh.jpg';
+		img.title = '刘德华';
+	}
+</script>
+```
+
+#### 分时问候案例
+```html
+<img src="images/s.gif" alt="">
+<div>上午好</div>
+<script>
+	// 根据系统不同时间来判断，所以需要用到日期内置对象
+	// 利用多分支语句来设置不同的图片
+	// 需要一个图片，并且根据时间修改图片，就需要用到操作元素src属性
+	// 需要一个div元素，显示不同问候语，修改元素内容即可
+	// 1.获取元素
+	var img = document.querySelector('img');
+	var div = document.querySelector('div');
+	// 2. 得到当前的小时数
+	var date = new Date();
+	var h = date.getHours();
+	// 3. 判断小时数改变图片和文字信息
+	if (h < 12) {
+		img.src = 'images/s.gif';
+		div.innerHTML = '亲，上午好，好好写代码';
+	} else if (h < 18) {
+		img.src = 'images/x.gif';
+		div.innerHTML = '亲，下午好，好好写代码';
+	} else {
+		img.src = 'images/w.gif';
+		div.innerHTML = '亲，晚上好，好好写代码';
+	}
+</script>
+```
+
+### 操作表单元素
+```html
+<button>按钮</button>
+<input type="text" value="输入内容">
+<script>
+	// 1. 获取元素
+	var btn = document.querySelector('button');
+	var input = document.querySelector('input');
+	// 2. 注册事件 处理程序
+	btn.onclick = function() {
+		// input.innerHTML = '点击了';  这个是 普通盒子 比如 div 标签里面的内容
+		// 表单里面的值 文字内容是通过 value 来修改的
+		input.value = '被点击了';
+		// 如果想要某个表单被禁用 不能再点击 disabled  我们想要这个按钮 button禁用
+		// btn.disabled = true;
+		this.disabled = true;
+		// this 指向的是事件函数的调用者 btn
+	}
+</script>
+```
+
+### 表单元素属性操作
+
+#### 密码明文案例
+```html
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .box {
+            position: relative;
+            width: 400px;
+            border-bottom: 1px solid #ccc;
+            margin: 100px auto;
+        }
+        
+        .box input {
+            width: 370px;
+            height: 30px;
+            border: 0;
+            outline: none;
+        }
+        
+        .box img {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 24px;
+        }
+    </style>
+</head>
+
+<body>
+	<div class="box">
+		<label for="">
+			<img src="images/close.png" alt="" id="eye">
+		</label>
+		<input type="password" name="" id="pwd">
+	</div>
+	<script>
+		// 1. 获取元素
+		var eye = document.getElementById('eye');
+		var pwd = document.getElementById('pwd');
+		// 2. 注册事件 处理程序
+		var flag = 0;
+		eye.onclick = function() {
+			// 点击一次之后， flag 一定要变化
+			if (flag == 0) {
+				pwd.type = 'text';
+				eye.src = 'images/open.png';
+				flag = 1; // 赋值操作
+			} else {
+				pwd.type = 'password';
+				eye.src = 'images/close.png';
+				flag = 0;
+			}
+		}
+	</script>
+</body>
+```
+
+### 样式属性操作
+```html
+<head>
+	<style>
+        div {
+            width: 200px;
+            height: 200px;
+            background-color: pink;
+        }
+    </style>
+</head>
+
+<body>
+    <div></div>
+    <script>
+        // 1. 获取元素
+        var div = document.querySelector('div');
+        // 2. 注册事件 处理程序
+        div.onclick = function() {
+            // div.style里面的属性 采取驼峰命名法 
+            this.style.backgroundColor = 'purple';
+            this.style.width = '250px';
+        }
+    </script>
+</body>
+```
+
+#### 关闭淘宝二维码案例
+```html
+<div class="box">
+	淘宝二维码
+	<img src="images/tao.png" alt="">
+	<i class="close-btn">×</i>
+</div>
+<script>
+	// 1. 获取元素 
+	var btn = document.querySelector('.close-btn');
+	var box = document.querySelector('.box');
+	// 2.注册事件 程序处理
+	btn.onclick = function() {
+		box.style.display = 'none';
+	}
+</script>
 ```

@@ -424,3 +424,271 @@ div {
    <span>行内元素尽量只设置左右的内外边距</span>
 </body>
 ```
+
+## 综合案例
+
+### box 布局
+```html
+<head>
+	<title>综合案例-产品模块</title>
+    <style>
+      * {
+          margin: 0;
+          padding: 0;
+      }
+      body {
+          background-color: #f5f5f5;
+      }
+      a {
+          color: #333;
+          text-decoration: none;
+      }
+      .box {
+          width: 298px;
+          height: 415px;
+          background-color:#fff;
+          /* 让块级的盒子水平居中对齐 */
+          margin: 100px auto;
+      }
+      .box img {
+          /* 图片的宽度和父亲一样宽 */
+          width: 100%;
+      }
+      .review {
+          height: 70px;
+          font-size: 14px;
+          /* 因为这个段落没有 width属性 所有 padding不会撑开盒子的宽度 */
+          padding: 0 28px;
+          margin-top: 30px;
+      }
+      .appraise {
+          font-size: 12px;
+          color: #b0b0b0;
+          margin-top: 20px;
+          padding: 0 28px;
+      }
+      .info {
+          font-size: 14px;
+          margin-top: 15px;
+          padding: 0 28px;
+      }
+      .info h4 {
+          display: inline-block;
+          font-weight: 400;
+        
+      }
+      .info span {
+          color: #ff6700;    
+      }
+      .info em {
+          font-style: normal;
+          color: #ebe4e0;
+          margin: 0 6px 0 15px;
+      }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <img src="images/img.jpg" alt="">
+        <p class="review">快递牛，整体不错蓝牙可以说秒连。红米给力</p>
+        <div class="appraise">来自于 117384232 的评价</div>
+        <div class="info">
+               <h4> <a href="#">Redmi AirDots真无线蓝...</a></h4>
+               <em>|</em>
+               <span> 99.9元</span>
+        </div>
+    </div>
+</body>
+```
+
+## 圆角边框 border-radius
+```css
+div {
+	width: 300px;
+	height: 150px;
+	background-color: pink;
+	border-radius: 10px;
+}
+.yuanxing {
+	width: 200px;
+	height: 200px;
+	background-color: pink;
+	/* border-radius: 100px; */
+	/* 50% 就是宽度和高度的一半  等价于 100px */
+	border-radius: 50%;
+}
+.juxing {
+	width: 300px;
+	height: 100px;
+	background-color: pink;
+	/* 圆角矩形设置为高度的一半 */
+	border-radius: 50px;
+}
+.radius {
+	width: 200px;
+	height: 200px;
+	/* border-radius: 10px 20px 30px 40px; */
+	/* border-radius: 10px 40px; */
+	border-top-left-radius: 20px;
+	background-color: pink;
+}
+
+
+<body>
+    1. 圆形的做法:
+    <div class="yuanxing"></div>
+    2. 圆角矩形的做法:
+    <div class="juxing"></div>
+    3. 可以设置不同的圆角:
+    <div class="radius"></div>
+</body>
+```
+
+## 盒子阴影 box-shadow
+```css
+div {
+	width: 200px;
+	height: 200px;
+	background-color: pink;
+	margin: 100px auto;
+	/* box-shadow: 10px 10px; */
+}
+/* 原先盒子没有影子,当我们鼠标经过盒子就添加阴影效果 */
+div:hover {
+	box-shadow: 10px 10px 10px -4px rgba(0, 0, 0, .3);
+}
+```
+
+## 文字阴影 text-shadow
+```css
+div {
+	font-size: 50px;
+	color: orangered;
+	font-weight: 700;
+	text-shadow: 5px 5px 6px rgba(0, 0, 0, .3);
+}
+```
+
+# CSS 浮动
+float属性用于创建浮动框，将其移动到一边，直到左边缘或右边缘触及包含块或另一个浮动框的边缘
+```css
+div {
+	float: left
+}
+```
+
+## 浮动特性
+
+### 脱标
+脱离标准普通流的控制（浮）移动到指定位置（动），（俗称脱标）
+浮动的盒子不再保留原先的位置
+
+### 一行内显示
+如果多个盒子都设置了浮动，则它们会按照属性值一行内显示井且顶端对奇排列。
+
+### 行内块特征
+任何元素都可以浮动。不管原先是什么模式的元素，添加浮动之后具有行内块元素相似的特性。
+如果行内元素有了浮动,则不需要转换块级行内块元素就可以直接给高度和宽度
+
+### 浮动元素与父级元素
+```html
+<style>
+	.box {
+		width: 1200px;
+		height: 460px;
+		background-color: pink;
+		margin: 0 auto;
+	}
+
+	.left {
+		float: left;
+		width: 230px;
+		height: 460px;
+		background-color: purple;
+	}
+
+	.right {
+		float: left;
+		width: 970px;
+		height: 460px;
+		background-color: skyblue;
+	}
+</style>
+
+<body>
+    <div class="box">
+        <div class="left">左侧</div>
+        <div class="right">右侧</div>
+    </div>
+</body>
+```
+
+子代选择器
+```css
+.right>div {
+	float: left;
+	width: 234px;
+	height: 300px;
+	background-color: pink;
+	margin-left: 14px;
+	margin-bottom: 14px;
+}
+```
+
+一个盒子里面有多个子盒子，如果其中一个盒子浮动了，那么其他兄弟也应该浮动，以防止引起问题。
+浮动的盒子只会影响浮动盒子后面的标准流不会影响前面的标准流
+
+## 清除浮动
+
+### 额外标签法
+额外标签法会在浮动元素末尾添加一个空的标签。例如`<div style:=”clear:both”></div>`或渚其他标签(如`<br/>`等)。新增的盒子要求必须是块级元素不能是行内元素
+
+### 给父级添加 overflow
+`overflow: hidden;`可以给父级添加overflow属性，将其属性值设置为hidden、auto或scroll
+
+### 给父级添加 :after 伪元素
+```html
+<style>
+	.clearfix:after {
+		content: "";
+		display: block;
+		height: 0;
+		clear: both;
+		visibility: hidden;
+	}
+	
+	.clearfix {
+		/* IE6、7 专有 */
+		*zoom: 1;
+	}
+</style>
+
+<div class="box clearfix">
+	<div class="damao">大毛</div>
+	<div class="ermao">二毛</div>
+</div>
+```
+
+### 给父级添加双伪元素
+```html
+<style>
+	.clearfix:before,
+	.clearfix:after {
+		content: "";
+		display: table;
+	}
+
+	.clearfix:after {
+		clear: both;
+	}
+
+	.clearfix {
+		*zoom: 1;
+	}
+</style>
+
+<div class="box clearfix">
+	<div class="damao">大毛</div>
+	<div class="ermao">二毛</div>
+</div>
+```

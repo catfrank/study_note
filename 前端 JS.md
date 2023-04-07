@@ -1374,3 +1374,495 @@ div.onclick = function() {
 	}
 </script>
 ```
+
+#### 循环精灵图
+```html
+<div class="box">
+	<ul>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+</div>
+<script>
+	// 1. 获取元素 所有的小li 
+	var lis = document.querySelectorAll('li');
+	for (var i = 0; i < lis.length; i++) {
+		// 让索引号 乘以 44 就是每个li 的背景y坐标  index就是我们的y坐标
+		var index = i * 44;
+		lis[i].style.backgroundPosition = '0 -' + index + 'px';
+	}
+</script>
+```
+
+#### 显示隐藏文本框内容
+```html
+<input type="text" value="手机">
+<script>
+	// 1.获取元素
+	var text = document.querySelector('input');
+	// 2.注册事件 获得焦点事件 onfocus 
+	text.onfocus = function() {
+			// console.log('得到了焦点');
+			if (this.value === '手机') {
+				this.value = '';
+			}
+			// 获得焦点需要把文本框里面的文字颜色变黑
+			this.style.color = '#333';
+		}
+		// 3. 注册事件 失去焦点事件 onblur
+	text.onblur = function() {
+		// console.log('失去了焦点');
+		if (this.value === '') {
+			this.value = '手机';
+		}
+		// 失去焦点需要把文本框里面的文字颜色变浅色
+		this.style.color = '#999';
+	}
+</script>
+```
+
+### 通过 className 修改元素样式
+```html
+<style>
+	div {
+		width: 100px;
+		height: 100px;
+		background-color: pink;
+	}
+	
+	.change {
+		background-color: purple;
+		color: #fff;
+		font-size: 25px;
+		margin-top: 100px;
+	}
+</style>
+
+
+<div class="first">文本</div>
+<script>
+	// 1. 使用 element.style 获得修改元素样式  如果样式比较少 或者 功能简单的情况下使用
+	var test = document.querySelector('div');
+	test.onclick = function() {
+		// this.style.backgroundColor = 'purple';
+		// this.style.color = '#fff';
+		// this.style.fontSize = '25px';
+		// this.style.marginTop = '100px';
+		// 让我们当前元素的类名改为了 change
+		// 2. 我们可以通过 修改元素的className更改元素的样式 适合于样式较多或者功能复杂的情况
+		// 3. 如果想要保留原先的类名，我们可以这么做 多类名选择器
+		// this.className = 'change';
+		this.className = 'first change';
+	}
+</script>
+```
+
+#### 密码框验证信息
+```html
+<style>
+        div {
+            width: 600px;
+            margin: 100px auto;
+        }
+        .message {
+            display: inline-block;
+            font-size: 12px;
+            color: #999;
+            background: url(images/mess.png) no-repeat left center;
+            padding-left: 20px;
+        }
+        .wrong {
+            color: red;
+            background-image: url(images/wrong.png);
+        }
+        .right {
+            color: green;
+            background-image: url(images/right.png);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register">
+        <input type="password" class="ipt">
+        <p class="message">请输入6~16位密码</p>
+    </div>
+    <script>
+        // 首先判断的事件是表单失去焦点 onblur
+        // 如果输入正确则提示正确的信息颜色为绿色小图标变化
+        // 如果输入不是6到16位，则提示错误信息颜色为红色 小图标变化
+        // 因为里面变化样式较多，我们采取className修改样式
+        // 1.获取元素
+        var ipt = document.querySelector('.ipt');
+        var message = document.querySelector('.message');
+        //2. 注册事件 失去焦点
+        ipt.onblur = function() {
+            // 根据表单里面值的长度 ipt.value.length
+            if (this.value.length < 6 || this.value.length > 16) {
+                // console.log('错误');
+                message.className = 'message wrong';
+                message.innerHTML = '您输入的位数不对要求6~16位';
+            } else {
+                message.className = 'message right';
+                message.innerHTML = '您输入的正确';
+            }
+        }
+    </script>
+</body>
+```
+
+### 排他思想
+如果有同一组元素，我们想要某一个元素实现某种样式，需要用到循环的排他思想算法
+```html
+<body>
+    <button>按钮1</button>
+    <button>按钮2</button>
+    <button>按钮3</button>
+    <button>按钮4</button>
+    <button>按钮5</button>
+    <script>
+        // 1. 获取所有按钮元素
+        var btns = document.getElementsByTagName('button');
+        // btns得到的是伪数组  里面的每一个元素 btns[i]
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].onclick = function() {
+                // (1) 我们先把所有的按钮背景颜色去掉  干掉所有人
+                for (var i = 0; i < btns.length; i++) {
+                    btns[i].style.backgroundColor = '';
+                }
+                // (2) 然后才让当前的元素背景颜色为pink 留下我自己
+                this.style.backgroundColor = 'pink';
+            }
+        }
+        //2. 首先先排除其他人，然后才设置自己的样式 这种排除其他人的思想我们成为排他思想
+    </script>
+</body>
+```
+
+#### 更换背景图片效果
+```html
+<head>
+	<style>
+		* {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background: url(images/1.jpg) no-repeat center top;
+        }
+        
+        li {
+            list-style: none;
+        }
+        
+        .baidu {
+            overflow: hidden;
+            margin: 100px auto;
+            background-color: #fff;
+            width: 410px;
+            padding-top: 3px;
+        }
+        
+        .baidu li {
+            float: left;
+            margin: 0 1px;
+            cursor: pointer;
+        }
+        
+        .baidu img {
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="baidu">
+        <li><img src="images/1.jpg"></li>
+        <li><img src="images/2.jpg"></li>
+        <li><img src="images/3.jpg"></li>
+        <li><img src="images/4.jpg"></li>
+    </ul>
+    <script>
+        // 1. 获取元素 
+        var imgs = document.querySelector('.baidu').querySelectorAll('img');
+        // console.log(imgs);
+        // 2. 循环注册事件 
+        for (var i = 0; i < imgs.length; i++) {
+            imgs[i].onclick = function() {
+                // this.src 就是我们点击图片的路径   images/2.jpg
+                // console.log(this.src);
+                // 把这个路径 this.src 给body 就可以了
+                document.body.style.backgroundImage = 'url(' + this.src + ')';
+            }
+        }
+    </script>
+</body>
+```
+
+#### 鼠标经过更换背景色
+```html
+<style>
+        table {
+            width: 800px;
+            margin: 100px auto;
+            text-align: center;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        thead tr {
+            height: 30px;
+            background-color: skyblue;
+        }
+        
+        tbody tr {
+            height: 30px;
+        }
+        
+        tbody td {
+            border-bottom: 1px solid #d7d7d7;
+            font-size: 12px;
+            color: blue;
+        }
+        
+        .bg {
+            background-color: pink;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>代码</th>
+                <th>名称</th>
+                <th>最新公布净值</th>
+                <th>累计净值</th>
+                <th>前单位净值</th>
+                <th>净值增长率</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>003526</td>
+                <td>农银金穗3个月定期开放债券</td>
+                <td>1.075</td>
+                <td>1.079</td>
+                <td>1.074</td>
+                <td>+0.047%</td>
+            </tr>
+            <tr>
+                <td>003526</td>
+                <td>农银金穗3个月定期开放债券</td>
+                <td>1.075</td>
+                <td>1.079</td>
+                <td>1.074</td>
+                <td>+0.047%</td>
+            </tr>
+            <tr>
+                <td>003526</td>
+                <td>农银金穗3个月定期开放债券</td>
+                <td>1.075</td>
+                <td>1.079</td>
+                <td>1.074</td>
+                <td>+0.047%</td>
+            </tr>
+            <tr>
+                <td>003526</td>
+                <td>农银金穗3个月定期开放债券</td>
+                <td>1.075</td>
+                <td>1.079</td>
+                <td>1.074</td>
+                <td>+0.047%</td>
+            </tr>
+            <tr>
+                <td>003526</td>
+                <td>农银金穗3个月定期开放债券</td>
+                <td>1.075</td>
+                <td>1.079</td>
+                <td>1.074</td>
+                <td>+0.047%</td>
+            </tr>
+            <tr>
+                <td>003526</td>
+                <td>农银金穗3个月定期开放债券</td>
+                <td>1.075</td>
+                <td>1.079</td>
+                <td>1.074</td>
+                <td>+0.047%</td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        // 1.获取元素 获取的是 tbody 里面所有的行
+        var trs = document.querySelector('tbody').querySelectorAll('tr');
+        // 2. 利用循环绑定注册事件
+        for (var i = 0; i < trs.length; i++) {
+            // 3. 鼠标经过事件 onmouseover
+            trs[i].onmouseover = function() {
+                    // console.log(11);
+                    this.className = 'bg';
+                }
+                // 4. 鼠标离开事件 onmouseout
+            trs[i].onmouseout = function() {
+                this.className = '';
+            }
+        }
+    </script>
+</body>
+```
+
+#### 表单全选/反选
+```html
+<body>
+    <div class="wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" id="j_cbAll" />
+                    </th>
+                    <th>商品</th>
+                    <th>价钱</th>
+                </tr>
+            </thead>
+            <tbody id="j_tb">
+                <tr>
+                    <td>
+                        <input type="checkbox" />
+                    </td>
+                    <td>iPhone8</td>
+                    <td>8000</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" />
+                    </td>
+                    <td>iPad Pro</td>
+                    <td>5000</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" />
+                    </td>
+                    <td>iPad Air</td>
+                    <td>2000</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" />
+                    </td>
+                    <td>Apple Watch</td>
+                    <td>2000</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <script>
+        // 1. 全选和取消全选做法：  让下面所有复选框的checked属性（选中状态） 跟随 全选按钮即可
+        // 获取元素
+        var j_cbAll = document.getElementById('j_cbAll'); // 全选按钮
+        var j_tbs = document.getElementById('j_tb').getElementsByTagName('input'); // 下面所有的复选框
+        // 注册事件
+        j_cbAll.onclick = function() {
+                // this.checked 它可以得到当前复选框的选中状态如果是true 就是选中，如果是false 就是未选中
+                console.log(this.checked);
+                for (var i = 0; i < j_tbs.length; i++) {
+                    j_tbs[i].checked = this.checked;
+                }
+            }
+            // 2. 下面复选框需要全部选中， 上面全选才能选中做法： 给下面所有复选框绑定点击事件，每次点击，都要循环查看下面所有的复选框是否有没选中的，如果有一个没选中的， 上面全选就不选中。
+        for (var i = 0; i < j_tbs.length; i++) {
+            j_tbs[i].onclick = function() {
+                // flag 控制全选按钮是否选中
+                var flag = true;
+                // 每次点击下面的复选框都要循环检查者4个小按钮是否全被选中
+                for (var i = 0; i < j_tbs.length; i++) {
+                    if (!j_tbs[i].checked) {
+                        flag = false;
+                        break; // 退出for循环 这样可以提高执行效率 因为只要有一个没有选中，剩下的就无需循环判断了
+                    }
+                }
+                j_cbAll.checked = flag;
+            }
+        }
+    </script>
+</body>
+```
+
+### 获取自定义属性值
+element.属性获取内置属性值（元素本身自带的属性）
+element.getAttribute('属性')；主要获得自定义的属性（标准）我们程序员自定义的属性
+```html
+<div id="demo" index="1" class="nav"></div>
+<script>
+	var div = document.querySelector('div');
+	// 1. 获取元素的属性值
+	// (1) element.属性
+	console.log(div.id);
+	//(2) element.getAttribute('属性')  get得到获取 attribute 属性的意思 我们程序员自己添加的属性我们称为自定义属性 index
+	console.log(div.getAttribute('id'));
+	console.log(div.getAttribute('index'));
+</script>
+```
+
+### 设置自定义属性值
+```html
+<script>
+// 2. 设置元素属性值
+	// (1) element.属性= '值'
+	div.id = 'test';
+	div.className = 'navs';
+	// (2) element.setAttribute('属性', '值');  主要针对于自定义属性
+	div.setAttribute('index', 2);
+	div.setAttribute('class', 'footer'); // class 特殊  这里面写的就是class 不是className
+	// 3 移除属性 removeAttribute(属性)    
+	div.removeAttribute('index');
+</script>
+```
+
+#### Tab 栏切换
+```html
+<script>
+	// 获取元素
+	var tab_list = document.querySelector('.tab_list');
+	var lis = tab_list.querySelectorAll('li');
+	var items = document.querySelectorAll('.item');
+	// for循环绑定点击事件
+	for (var i = 0; i < lis.length; i++) {
+		// 开始给5个小li 设置索引号 
+		lis[i].setAttribute('index', i);
+		lis[i].onclick = function() {
+			// 1. 上的模块选项卡，点击某一个，当前这一个底色会是红色，其余不变（排他思想） 修改类名的方式
+			// 干掉所有人 其余的li清除 class 这个类
+			for (var i = 0; i < lis.length; i++) {
+				lis[i].className = '';
+			}
+			// 留下我自己 
+			this.className = 'current';
+			// 2. 下面的显示内容模块
+			var index = this.getAttribute('index');
+			console.log(index);
+			// 干掉所有人 让其余的item 这些div 隐藏
+			for (var i = 0; i < items.length; i++) {
+				items[i].style.display = 'none';
+			}
+			// 留下我自己 让对应的item 显示出来
+			items[index].style.display = 'block';
+		}
+	}
+</script>
+```

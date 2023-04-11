@@ -1803,7 +1803,7 @@ div.onclick = function() {
 </body>
 ```
 
-### 获取自定义属性值
+### 自定义属性值
 element.属性获取内置属性值（元素本身自带的属性）
 element.getAttribute('属性')；主要获得自定义的属性（标准）我们程序员自定义的属性
 ```html
@@ -1819,7 +1819,7 @@ element.getAttribute('属性')；主要获得自定义的属性（标准）我�
 </script>
 ```
 
-### 设置自定义属性值
+#### 设置自定义属性值
 ```html
 <script>
 // 2. 设置元素属性值
@@ -1865,4 +1865,686 @@ element.getAttribute('属性')；主要获得自定义的属性（标准）我�
 		}
 	}
 </script>
+```
+
+#### H5 获取自定义属性
+H5规定自定义属性data开头做为属性名并且赋值。
+比如`<div data-index=""><div>`
+```html
+<div getTime="20" data-index="2" data-list-name="andy"></div>
+    <script>
+        var div = document.querySelector('div');
+        // console.log(div.getTime);
+        console.log(div.getAttribute('getTime'));
+        div.setAttribute('data-time', 20);
+        console.log(div.getAttribute('data-index'));
+        console.log(div.getAttribute('data-list-name'));
+        // h5新增的获取自定义属性的方法 它只能获取data-开头的
+        // dataset 是一个集合里面存放了所有以data开头的自定义属性
+        console.log(div.dataset);
+        console.log(div.dataset.index);
+        console.log(div.dataset['index']);
+        // 如果自定义属性里面有多个-链接的单词，我们获取的时候采取 驼峰命名法
+        console.log(div.dataset.listName);
+        console.log(div.dataset['listName']);
+    </script>
+</div>
+```
+
+### 节点操作
+一般地，节点至少拥有nodeType（节点类型）、nodeName（节点名称）和nodeValue（节点值）这三个基本属性。
+元素节点nodeType为1
+属性节点nodeType为2
+文本节点nodeType为3(文本节点包含文字、空格、换行等)
+
+#### 节点层级
+
+##### 父节点
+```html
+<div class="demo">
+	<div class="box">
+		<span class="erweima">×</span>
+	</div>
+</div>
+
+<script>
+	// 1. 父节点 parentNode
+	var erweima = document.querySelector('.erweima');
+	// var box = document.querySelector('.box');
+	// 得到的是离元素最近的父级节点(亲爸爸) 如果找不到父节点就返回为 null
+	console.log(erweima.parentNode);
+</script>
+```
+
+##### 子节点
+注意：childNodes 返回值里面包含了所有的子节点，包括元素节点，文本节点等。
+如果只想要获得里面的元素节点，则需要专门处理。所以我们一般不提倡使用child Nodes
+```html
+<script>
+	// DOM 提供的方法（API）获取
+	var ul = document.querySelector('ul');
+	var lis = ul.querySelectorAll('li');
+	// 1. 子节点  childNodes 所有的子节点 包含 元素节点 文本节点等等
+	console.log(ul.childNodes);
+	console.log(ul.childNodes[0].nodeType);
+	console.log(ul.childNodes[1].nodeType);
+	// 2. children 获取所有的子元素节点 也是我们实际开发常用的
+	console.log(ul.children);
+</script>
+```
+
+##### 子节点第一个/最后一个节点
+```html
+<script>
+	var ol = document.querySelector('ol');
+	// 1. firstChild 第一个子节点 不管是文本节点还是元素节点
+	console.log(ol.firstChild);
+	console.log(ol.lastChild);
+	// 2. firstElementChild 返回第一个子元素节点 ie9才支持
+	console.log(ol.firstElementChild);
+	console.log(ol.lastElementChild);
+	// 3. 实际开发的写法  既没有兼容性问题又返回第一个子元素
+	console.log(ol.children[0]);
+	console.log(ol.children[ol.children.length - 1]);
+</script>
+```
+
+##### 下拉菜单案例
+```html
+<body>
+    <ul class="nav">
+        <li>
+            <a href="#">微博</a>
+            <ul>
+                <li>
+                    <a href="">私信</a>
+                </li>
+                <li>
+                    <a href="">评论</a>
+                </li>
+                <li>
+                    <a href="">@我</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">微博</a>
+            <ul>
+                <li>
+                    <a href="">私信</a>
+                </li>
+                <li>
+                    <a href="">评论</a>
+                </li>
+                <li>
+                    <a href="">@我</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">微博</a>
+            <ul>
+                <li>
+                    <a href="">私信</a>
+                </li>
+                <li>
+                    <a href="">评论</a>
+                </li>
+                <li>
+                    <a href="">@我</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">微博</a>
+            <ul>
+                <li>
+                    <a href="">私信</a>
+                </li>
+                <li>
+                    <a href="">评论</a>
+                </li>
+                <li>
+                    <a href="">@我</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <script>
+        // 1. 获取元素
+        var nav = document.querySelector('.nav');
+        var lis = nav.children; // 得到4个小li
+        // 2.循环注册事件
+        for (var i = 0; i < lis.length; i++) {
+            lis[i].onmouseover = function() {
+                this.children[1].style.display = 'block';
+            }
+            lis[i].onmouseout = function() {
+                this.children[1].style.display = 'none';
+            }
+        }
+    </script>
+</body>
+```
+
+##### 兄弟节点
+```html
+<div>我是div</div>
+<span>我是span</span>
+<script>
+	var div = document.querySelector('div');
+	// 1.nextSibling 下一个兄弟节点 包含元素节点或者 文本节点等等
+	console.log(div.nextSibling);
+	console.log(div.previousSibling);
+	// 2. nextElementSibling 得到下一个兄弟元素节点
+	console.log(div.nextElementSibling);
+	console.log(div.previousElementSibling);
+</script>
+```
+
+#### 创建/添加节点
+document.createElement（）方法创建由tagName指定的HTML元素。因为这些元素原先不存在，是根据我们的需求动态生成的，所以我们也称为动态创建元素节点。
+```html
+<ul>
+	<li>123</li>
+</ul>
+<script>
+	// 1. 创建节点元素节点
+	var li = document.createElement('li');
+	// 2. 添加节点 node.appendChild(child)  node 父级  child 是子级 后面追加元素  类似于数组中的push
+	var ul = document.querySelector('ul');
+	ul.appendChild(li);
+	// 3. 添加节点 node.insertBefore(child, 指定元素);
+	var lili = document.createElement('li');
+	ul.insertBefore(lili, ul.children[0]);
+	// 4. 我们想要页面添加一个新的元素 ： 1. 创建元素 2. 添加元素
+</script>
+```
+
+##### 简单留言板
+```html
+<textarea name="" id=""></textarea>
+<button>发布</button>
+<ul>
+
+</ul>
+<script>
+	// 1. 获取元素
+	var btn = document.querySelector('button');
+	var text = document.querySelector('textarea');
+	var ul = document.querySelector('ul');
+	// 2. 注册事件
+	btn.onclick = function() {
+		if (text.value == '') {
+			alert('您没有输入内容');
+			return false;
+		} else {
+			// console.log(text.value);
+			// (1) 创建元素
+			var li = document.createElement('li');
+			// 先有li 才能赋值
+			li.innerHTML = text.value;
+			// (2) 添加元素
+			// ul.appendChild(li);
+			ul.insertBefore(li, ul.children[0]);
+		}
+	}
+</script>
+```
+
+#### 删除节点
+```html
+<button>删除</button>
+<ul>
+	<li>熊大</li>
+	<li>熊二</li>
+	<li>光头强</li>
+</ul>
+<script>
+	// 1.获取元素
+	var ul = document.querySelector('ul');
+	var btn = document.querySelector('button');
+	// 2. 删除元素  node.removeChild(child)
+	// ul.removeChild(ul.children[0]);
+	// 3. 点击按钮依次删除里面的孩子
+	btn.onclick = function() {
+		if (ul.children.length == 0) {
+			this.disabled = true;
+		} else {
+			ul.removeChild(ul.children[0]);
+		}
+	}
+</script>
+```
+
+##### 删除留言案例
+```html
+<textarea name="" id=""></textarea>
+<button>发布</button>
+<ul>
+
+</ul>
+<script>
+	// 1. 获取元素
+	var btn = document.querySelector('button');
+	var text = document.querySelector('textarea');
+	var ul = document.querySelector('ul');
+	// 2. 注册事件
+	btn.onclick = function() {
+		if (text.value == '') {
+			alert('您没有输入内容');
+			return false;
+		} else {
+			// console.log(text.value);
+			// (1) 创建元素
+			var li = document.createElement('li');
+			// 先有li 才能赋值
+			li.innerHTML = text.value + "<a href='javascript:;'>删除</a>";
+			// (2) 添加元素
+			// ul.appendChild(li);
+			ul.insertBefore(li, ul.children[0]);
+			// (3) 删除元素 删除的是当前链接的li  它的父亲
+			var as = document.querySelectorAll('a');
+			for (var i = 0; i < as.length; i++) {
+				as[i].onclick = function() {
+					// node.removeChild(child); 删除的是 li 当前a所在的li  this.parentNode;
+					ul.removeChild(this.parentNode);
+				}
+			}
+		}
+	}
+</script>
+```
+
+#### 克隆节点
+node.cloneNode（）方法返回调用该方法的节点的一个副本。也称为克隆节点/拷贝节点
+注意：
+1. 如果括号参数为空或者为fa1se,则是浅拷贝，即只克隆复制节点本身，不克隆里面的子节点。
+2. node.cloneNode(true); 括号为true 深拷贝 复制标签复制里面的内容
+```html
+<ul>
+	<li>1111</li>
+	<li>2</li>
+	<li>3</li>
+</ul>
+<script>
+	var ul = document.querySelector('ul');
+	// 1. node.cloneNode(); 括号为空或者里面是false 浅拷贝 只复制标签不复制里面的内容
+	// 2. node.cloneNode(true); 括号为true 深拷贝 复制标签复制里面的内容
+	var lili = ul.children[0].cloneNode(true);
+	ul.appendChild(lili);
+</script>
+```
+
+#### 动态调整表格
+```html
+<table cellspacing="0">
+	<thead>
+		<tr>
+			<th>姓名</th>
+			<th>科目</th>
+			<th>成绩</th>
+			<th>操作</th>
+		</tr>
+	</thead>
+	<tbody>
+
+	</tbody>
+</table>
+<script>
+	// 1.先去准备好学生的数据 可以从后端获取
+	var datas = [
+		{
+			name: '魏璎珞',
+			subject: 'JavaScript',
+			score: 100
+		}, {
+			name: '弘历',
+			subject: 'JavaScript',
+			score: 98
+		}, {
+			name: '傅恒',
+			subject: 'JavaScript',
+			score: 99
+		}, {
+			name: '明玉',
+			subject: 'JavaScript',
+			score: 88
+		}, {
+			name: '大猪蹄子',
+			subject: 'JavaScript',
+			score: 0
+		}
+	];
+	// 2. 往tbody 里面创建行： 有几个人（通过数组的长度）我们就创建几行
+	var tbody = document.querySelector('tbody');
+	for (var i = 0; i < datas.length; i++) { // 外面的for循环管行 tr
+		// 1. 创建 tr行
+		var tr = document.createElement('tr');
+		tbody.appendChild(tr);
+		// 2. 行里面创建单元格(跟数据有关系的3个单元格) td 单元格的数量取决于每个对象里面的属性个数  for循环遍历对象 datas[i]
+		for (var k in datas[i]) { // 里面的for循环管列 td
+			// 创建单元格 
+			var td = document.createElement('td');
+			// 把对象里面的属性值 datas[i][k] 给 td  
+			// console.log(datas[i][k]);
+			td.innerHTML = datas[i][k];
+			tr.appendChild(td);
+		}
+		// 3. 创建有删除2个字的单元格 
+		var td = document.createElement('td');
+		td.innerHTML = '<a href="javascript:;">删除 </a>';
+		tr.appendChild(td);
+	}
+	// 4. 删除操作 开始 
+	var as = document.querySelectorAll('a');
+	for (var i = 0; i < as.length; i++) {
+		as[i].onclick = function() {
+			// 点击a 删除 当前a 所在的行(链接的爸爸的爸爸)  node.removeChild(child)  
+			tbody.removeChild(this.parentNode.parentNode)
+		}
+	}
+	// for(var k in obj) {
+	//     k 得到的是属性名
+	//     obj[k] 得到是属性值
+	// }
+</script>
+```
+
+### 三种创建元素的区别
+1. document.write() 创建元素  如果页面文档流加载完毕，再调用这句话会导致页面重绘
+```html
+<script>
+	var btn = document.querySelector('button');
+	btn.onclick = function() {
+		document.write('<div>123</div>');
+	}
+</script>
+```
+2. innerHTML 创建元素
+```html
+<script>
+	// 追加多个元素（效率低）
+	var inner = document.querySelector('.inner');
+	for (var i = 0; i <= 100; i++) {
+		inner.innerHTML += '<a href="#">百度</a>'
+	}
+	// 数组（效率高）
+	var arr = [];
+	for (var i = 0; i <= 100; i++) {
+		arr.push('<a href="#">百度</a>');
+	}
+</script>
+```
+3. document.createElement() 创建元素（效率比数组低，比追加高）
+```html
+<script>
+	var create = document.querySelector('.create');
+	for (var i = 0; i <= 100; i++) {
+		var a = document.createElement('a');
+		create.appendChild(a);
+	}
+</script>
+```
+
+## DOM 重点核心
+关于dom操作，我们主要针对于元素的操作。主要有创健、增、删、改、查、属性操作、事件操作。
+
+### 事件
+
+### 注册事件
+```html
+<script>
+	var btns = document.querySelectorAll('button');
+	// 1. 传统方式注册事件
+	btns[0].onclick = function() {
+		alert('hi');
+	}
+	btns[0].onclick = function() {
+			alert('hao a u');
+		}
+		// 2. 事件侦听注册事件 addEventListener 
+		// (1) 里面的事件类型是字符串 必定加引号 而且不带on
+		// (2) 同一个元素 同一个事件可以添加多个侦听器（事件处理程序）
+	btns[1].addEventListener('click', function() {
+		alert(22);
+	})
+	btns[1].addEventListener('click', function() {
+			alert(33);
+		})
+		// 3. attachEvent ie9以前的版本支持
+	btns[2].attachEvent('onclick', function() {
+		alert(11);
+	})
+</script>
+```
+
+### 删除事件
+```html
+<body>
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <script>
+        var divs = document.querySelectorAll('div');
+        divs[0].onclick = function() {
+                alert(11);
+                // 1. 传统方式删除事件
+                divs[0].onclick = null;
+            }
+            // 2. removeEventListener 删除事件
+        divs[1].addEventListener('click', fn) // 里面的fn 不需要调用加小括号
+        function fn() {
+            alert(22);
+            divs[1].removeEventListener('click', fn);
+        }
+        // 3. detachEvent
+        divs[2].attachEvent('onclick', fn1);
+        function fn1() {
+            alert(33);
+            divs[2].detachEvent('onclick', fn1);
+        }
+    </script>
+</body>
+```
+
+### DOM 事件流
+DOM事件流分为3个阶段：
+1.捕获阶段
+2.当前目标阶段
+3.冒泡阶段
+事件冒泡：IE最早提出，事件开始时由最具体的元素接收，然后逐级向上传播到倒到DOM最顶层节点的过程
+事件捕获：网景最早提出，由DOM最顶层节点开始，然后逐级向下传播到到最具体的元素接收的过程。
+```html
+<style>
+	.father {
+		overflow: hidden;
+		width: 300px;
+		height: 300px;
+		margin: 100px auto;
+		background-color: pink;
+		text-align: center;
+	}
+	
+	.son {
+		width: 200px;
+		height: 200px;
+		margin: 50px;
+		background-color: purple;
+		line-height: 200px;
+		color: #fff;
+	}
+</style>
+
+<body>
+    <div class="father">
+        <div class="son">son盒子</div>
+    </div>
+    <script>
+        // dom 事件流 三个阶段
+        // 1. JS 代码中只能执行捕获或者冒泡其中的一个阶段。
+        // 2. onclick 和 attachEvent（ie） 只能得到冒泡阶段。
+        // 3. 捕获阶段 如果addEventListener 第三个参数是 true 那么则处于捕获阶段  document -> html -> body -> father -> son
+        // var son = document.querySelector('.son');
+        // son.addEventListener('click', function() {
+        //     alert('son');
+        // }, true);
+        // var father = document.querySelector('.father');
+        // father.addEventListener('click', function() {
+        //     alert('father');
+        // }, true);
+        // 4. 冒泡阶段 如果addEventListener 第三个参数是 false 或者 省略 那么则处于冒泡阶段  son -> father ->body -> html -> document
+        var son = document.querySelector('.son');
+        son.addEventListener('click', function() {
+            alert('son');
+        }, false);
+        var father = document.querySelector('.father');
+        father.addEventListener('click', function() {
+            alert('father');
+        }, false);
+        document.addEventListener('click', function() {
+            alert('document');
+        })
+    </script>
+</body>
+```
+1.JS代码中只能执行捕获或者冒泡其中的一个阶段。
+2.onclick和attachEvent只能得到冒泡阶段。
+3.addEventListener(type,listener[,useCapture])第三个参数如果是true,表示在事件捕获阶段调用事件处理程序：如果是fa1se(不写默认就是fa1se),表示在事件冒泡阶段调用事件牧处理程序。
+4.实际开发中我们很少使用事件捕获，我们更关注事件冒泡。
+5.有些事件是没有冒泡的，比如onblur、onfocus、onmouseenter、onmouseleave
+6.事件冒泡有时候会带来麻烦，有时候又会帮助很巧妙的做某些事件，我们后面讲解。
+
+### 事件对象
+1. event 就是一个事件对象 写到我们侦听函数的 小括号里面 当形参来看
+2. 事件对象只有有了事件才会存在，它是系统给我们自动创建的，不需要我们传递参数
+3. 事件对象 是 我们事件的一系列相关数据的集合 跟事件相关的 比如鼠标点击里面就包含了鼠标的相关信息，鼠标坐标啊，如果是键盘事件里面就包含的键盘事件的信息 比如 判断用户按下了那个键
+4. 这个事件对象我们可以自己命名 比如 event 、 evt、 e
+5. 事件对象也有兼容性问题 ie678 通过 window.event 兼容性的写法  e = e || window.event;
+```html
+<div>123</div>
+<script>
+	// 事件对象
+	var div = document.querySelector('div');
+	div.onclick = function(e) {
+			// console.log(e);
+			// console.log(window.event);
+			// e = e || window.event;
+			console.log(e);
+		}
+</script>
+```
+
+### 事件对象的属性 e.target/this
+```js
+// 1. e.target 返回的是触发事件的对象（元素）  this 返回的是绑定事件的对象（元素）
+// 区别 ： e.target 点击了那个元素，就返回那个元素 this 那个元素绑定了这个点击事件，那么就返回谁
+var div = document.querySelector('div');
+div.addEventListener('click', function(e) {
+	console.log(e.target);
+	console.log(this);
+})
+var ul = document.querySelector('ul');
+ul.addEventListener('click', function(e) {
+		// 我们给ul 绑定了事件  那么this 就指向ul  
+		console.log(this);
+		console.log(e.currentTarget);
+		// e.target 指向我们点击的那个对象 谁触发了这个事件 我们点击的是li e.target 指向的就是li
+		console.log(e.target);
+	})
+	// 了解兼容性
+	// div.onclick = function(e) {
+	//     e = e || window.event;
+	//     var target = e.target || e.srcElement;
+	//     console.log(target);
+// }
+// 2. 了解 跟 this 有个非常相似的属性 currentTarget  ie678不认识
+```
+
+### 阻止事件默认行为
+```html
+<body>
+    <div>123</div>
+    <a href="http://www.baidu.com">百度</a>
+    <form action="http://www.baidu.com">
+        <input type="submit" value="提交" name="sub">
+    </form>
+    <script>
+        // 常见事件对象的属性和方法
+        // 1. 返回事件类型
+        var div = document.querySelector('div');
+        div.addEventListener('click', fn);
+        div.addEventListener('mouseover', fn);
+        div.addEventListener('mouseout', fn);
+        
+        function fn(e) {
+            console.log(e.type);
+        }
+        // 2. 阻止默认行为（事件） 让链接不跳转 或者让提交按钮不提交
+        var a = document.querySelector('a');
+        a.addEventListener('click', function(e) {
+                e.preventDefault(); //  dom 标准写法
+            })
+            // 3. 传统的注册方式
+        a.onclick = function(e) {
+            // 普通浏览器 e.preventDefault();  方法
+            // e.preventDefault();
+            // 低版本浏览器 ie678  returnValue  属性
+            // e.returnValue;
+            // 我们可以利用return false 也能阻止默认行为 没有兼容性问题 特点： return 后面的代码不执行了， 而且只限于传统的注册方式
+            return false;
+            alert(11);
+        }
+    </script>
+</body>
+```
+
+### 阻止事件冒泡
+```html
+<body>
+    <div class="father">
+        <div class="son">son儿子</div>
+    </div>
+    <script>
+        // 常见事件对象的属性和方法
+        // 阻止冒泡  dom 推荐的标准 stopPropagation() 
+        var son = document.querySelector('.son');
+        son.addEventListener('click', function(e) {
+            alert('son');
+            e.stopPropagation(); // stop 停止  Propagation 传播
+            e.cancelBubble = true; // 非标准 cancel 取消 bubble 泡泡
+        }, false);
+
+        var father = document.querySelector('.father');
+        father.addEventListener('click', function() {
+            alert('father');
+        }, false);
+        document.addEventListener('click', function() {
+            alert('document');
+        })
+    </script>
+</body>
+```
+
+### 事件委托
+不是每个子节点单独设置事件监听器，而是事件监听器设置在其父节点上，然后利用冒泡原理影响设置每个子节点。
+```html
+<body>
+    <ul>
+        <li>知否知否，点我应有弹框在手！</li>
+        <li>知否知否，点我应有弹框在手！</li>
+        <li>知否知否，点我应有弹框在手！</li>
+        <li>知否知否，点我应有弹框在手！</li>
+        <li>知否知否，点我应有弹框在手！</li>
+    </ul>
+    <script>
+        // 事件委托的核心原理：给父节点添加侦听器， 利用事件冒泡影响每一个子节点
+        var ul = document.querySelector('ul');
+        ul.addEventListener('click', function(e) {
+            // alert('知否知否，点我应有弹框在手！');
+            // e.target 这个可以得到我们点击的对象
+            e.target.style.backgroundColor = 'pink';
+        })
+    </script>
+</body>
 ```

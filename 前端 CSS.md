@@ -1304,3 +1304,128 @@ visibility隐藏元素后，继续占有原来的位置
 <nav>导航栏标签</nav>
 <section>某个区域</section>
 ```
+
+## 视频标签
+```html
+<body>
+    <video src="media/mi.mp4" autoplay="autoplay" muted="muted"  loop="loop" poster="media/mi9.jpg"></video>
+</body>
+```
+
+## 音频标签
+```html
+<body>
+    <audio src="media/music.mp3" autoplay="autoplay" controls="controls"></audio>
+</body>
+```
+
+
+## input 表单
+```html
+<body>
+    <!-- 我们验证的时候必须添加form表单域 -->
+    <form action="">
+        <ul>
+            <li>邮箱: <input type="email" /></li>
+            <li>网址: <input type="url" /></li>
+            <li>日期: <input type="date" /></li>
+            <li>时间: <input type="time" /></li>
+            <li>数量: <input type="number" /></li>
+            <li>手机号码: <input type="tel" /></li>
+            <li>搜索: <input type="search" /></li>
+            <li>颜色: <input type="color" /></li>
+            <!-- 当我们点击提交按钮就可以验证表单了 -->
+            <li> <input type="submit" value="提交"></li>
+        </ul>
+    </form>
+</body>
+```
+
+## 表单属性
+```html
+<form action="">
+		<input type="search" name="sear" id="" required="required" placeholder="pink老师" autofocus="autofocus" autocomplete="off">
+		<input type="file" name="" id="" multiple="multiple">
+		<input type="submit" value="提交">
+    </form>
+```
+
+# CSS3 特性
+
+## 属性选择器
+```html
+<style>
+	/* 必须是input 但是同时具有 value这个属性 选择这个元素  [] */
+	/* input[value] {
+		color:pink;
+	} */
+	/* 只选择 type =text 文本框的input 选取出来 */
+	input[type=text] {
+		color: pink;
+	}
+	/* 选择首先是div 然后 具有class属性 并且属性值 必须是 icon开头的这些元素 */
+	div[class^=icon] {
+		color: red;
+	}
+	section[class$=data] {
+		color: blue;
+	}
+	div.icon1 {
+		color: skyblue;
+	}
+	/* 类选择器和属性选择器 伪类选择器 权重都是 10 */
+</style>
+
+<body>
+    <!-- 1. 利用属性选择器就可以不用借助于类或者id选择器 -->
+    <!-- <input type="text" value="请输入用户名">
+    <input type="text"> -->
+    <!-- 2. 属性选择器还可以选择属性=值的某些元素 重点务必掌握的 -->
+    <input type="text" name="" id="">
+    <input type="password" name="" id="">
+    <!-- 3. 属性选择器可以选择属性值开头的某些元素 -->
+    <div class="icon1">小图标1</div>
+    <div class="icon2">小图标2</div>
+    <div class="icon3">小图标3</div>
+    <div class="icon4">小图标4</div>
+    <div>我是打酱油的</div>
+    <!-- 4. 属性选择器可以选择属性值结尾的某些元素 -->
+    <section class="icon1-data">我是安其拉</section>
+    <section class="icon2-data">我是哥斯拉</section>
+    <section class="icon3-ico">哪我是谁</section>
+</body>
+```
+
+## 结构伪类选择器
+```html
+<style>
+	/* 1. 选择ul里面的第一个孩子 小li */
+	ul li:first-child {
+		background-color: pink;
+	}
+	/* 2. 选择ul里面的最后一个孩子 小li */
+	ul li:last-child {
+		background-color: pink;
+	}
+	 /* 3. 选择ul里面的第2个孩子 小li */
+	 ul li:nth-child(2) {
+		background-color: skyblue;
+	}
+	ul li:nth-child(6) {
+		background-color: skyblue;
+	}
+</style>
+
+<body>
+    <ul>
+        <li>我是第1个孩子</li>
+        <li>我是第2个孩子</li>
+        <li>我是第3个孩子</li>
+        <li>我是第4个孩子</li>
+        <li>我是第5个孩子</li>
+        <li>我是第6个孩子</li>
+        <li>我是第7个孩子</li>
+        <li>我是第8个孩子</li>
+    </ul>
+</body>
+```

@@ -2548,3 +2548,480 @@ ul.addEventListener('click', function(e) {
     </script>
 </body>
 ```
+
+### 禁止右键和选中
+```html
+<body>
+    我是一段不愿意分享的文字
+    <script>
+        // 1. contextmenu 我们可以禁用右键菜单
+        document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            })
+            // 2. 禁止选中文字 selectstart
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+
+        })
+    </script>
+</body>
+```
+
+### 鼠标坐标
+```html
+<body>
+    <script>
+        // 鼠标事件对象 MouseEvent
+        document.addEventListener('click', function(e) {
+            // 1. client 鼠标在可视区的x和y坐标
+            console.log(e.clientX);
+            console.log(e.clientY);
+            console.log('---------------------');
+
+            // 2. page 鼠标在页面文档的x和y坐标
+            console.log(e.pageX);
+            console.log(e.pageY);
+            console.log('---------------------');
+
+            // 3. screen 鼠标在电脑屏幕的x和y坐标
+            console.log(e.screenX);
+            console.log(e.screenY);
+
+        })
+    </script>
+</body>
+```
+
+#### 图片跟随鼠标移动
+```html
+<style>
+	img {
+		position: absolute;
+		top: 2px;
+	}
+</style>
+
+<body>
+    <img src="images/angel.gif" alt="">
+    <script>
+        var pic = document.querySelector('img');
+        document.addEventListener('mousemove', function(e) {
+            // 1. mousemove只要我们鼠标移动1px 就会触发这个事件
+            // console.log(1);
+            // 2.核心原理： 每次鼠标移动，我们都会获得最新的鼠标坐标， 把这个x和y坐标做为图片的top和left 值就可以移动图片
+            var x = e.pageX;
+            var y = e.pageY;
+            console.log('x坐标是' + x, 'y坐标是' + y);
+            //3 . 千万不要忘记给left 和top 添加px 单位
+            pic.style.left = x - 50 + 'px';
+            pic.style.top = y - 40 + 'px';
+        });
+    </script>
+</body>
+```
+
+### 键盘事件
+```html
+<script>
+	// 常用的键盘事件
+	//1. keyup 按键弹起的时候触发 
+	// document.onkeyup = function() {
+	//         console.log('我弹起了');
+	//     }
+	document.addEventListener('keyup', function() {
+		console.log('我弹起了');
+	})
+	//3. keypress 按键按下的时候触发  不能识别功能键 比如 ctrl shift 左右箭头
+	document.addEventListener('keypress', function() {
+			console.log('我按下了press');
+		})
+		//2. keydown 按键按下的时候触发  能识别功能键 比如 ctrl shift 左右箭头
+	document.addEventListener('keydown', function() {
+			console.log('我按下了down');
+		})
+		// 4. 三个事件的执行顺序  keydown -- keypress -- keyup
+</script>
+```
+
+### 键盘 keyCode 属性
+```html
+<script>
+	// 键盘事件对象中的keyCode属性可以得到相应键的ASCII码值
+	// 1. 我们的keyup 和keydown事件不区分字母大小写  a 和 A 得到的都是65
+	// 2. 我们的keypress 事件 区分字母大小写  a  97 和 A 得到的是65
+	document.addEventListener('keyup', function(e) {
+		// console.log(e);
+		console.log('up:' + e.keyCode);
+		// 我们可以利用keycode返回的ASCII码值来判断用户按下了那个键
+		if (e.keyCode === 65) {
+			alert('您按下的a键');
+		} else {
+			alert('您没有按下a键')
+		}
+	})
+	document.addEventListener('keypress', function(e) {
+		// console.log(e);
+		console.log('press:' + e.keyCode);
+	})
+</script>
+```
+
+#### 京东搜索框
+```html
+<body>
+    <input type="text">
+    <script>
+        // 核心思路： 检测用户是否按下了s 键，如果按下s 键，就把光标定位到搜索框里面
+        // 使用键盘事件对象里面的keyCode 判断用户按下的是否是s键
+        // 搜索框获得焦点： 使用 js 里面的 focus() 方法
+        var search = document.querySelector('input');
+        document.addEventListener('keyup', function(e) {
+            // console.log(e.keyCode);
+            if (e.keyCode === 83) {
+                search.focus();
+            }
+        })
+    </script>
+</body>
+```
+
+#### 查询快递单框
+```html
+<body>
+    <div class="search">
+        <div class="con">123</div>
+        <input type="text" placeholder="请输入您的快递单号" class="jd">
+    </div>
+    <script>
+        // 快递单号输入内容时， 上面的大号字体盒子（con）显示(这里面的字号更大）
+        // 表单检测用户输入： 给表单添加键盘事件
+        // 同时把快递单号里面的值（value）获取过来赋值给 con盒子（innerText）做为内容
+        // 如果快递单号里面内容为空，则隐藏大号字体盒子(con)盒子
+        var con = document.querySelector('.con');
+        var jd_input = document.querySelector('.jd');
+        jd_input.addEventListener('keyup', function() {
+                // console.log('输入内容啦');
+                if (this.value == '') {
+                    con.style.display = 'none';
+                } else {
+                    con.style.display = 'block';
+                    con.innerText = this.value;
+                }
+            })
+            // 当我们失去焦点，就隐藏这个con盒子
+        jd_input.addEventListener('blur', function() {
+                con.style.display = 'none';
+            })
+            // 当我们获得焦点，就显示这个con盒子
+        jd_input.addEventListener('focus', function() {
+            if (this.value !== '') {
+                con.style.display = 'block';
+            }
+        })
+    </script>
+</body>
+```
+
+## BOM
+BOM(Browser Object Model)即浏览器对象模型，它提供了独立于内容而与浏览器窗口进行交互的对像，其核心对象是window.
+BOM由一系列相关的对象构成，并目每个对像都提供了很多方法与属性。
+
+### 窗口加载事件 onload
+window.onload是窗口页面）加载事件，当文档内容完全加载完成会发该事件（包括图像、脚本文件、CSS文件等），就调用的处理函数。
+1.有了window.onload就可以把JS代码写到页面元素的上方，因为onload是等页面内容全部加载完毕再去执行处理函数。
+2.window.onload传统注册事件方式只能写一次，如果有多个，会以最后一个window.onload为准。
+3.如果使用addEventListener则没有限制
+```html
+<script>
+	// window.onload = function() {
+	//     var btn = document.querySelector('button');
+	//     btn.addEventListener('click', function() {
+	//         alert('点击我');
+	//     })
+	// }
+	// window.onload = function() {
+	//     alert(22);
+	// }
+	window.addEventListener('load', function() {
+		var btn = document.querySelector('button');
+		btn.addEventListener('click', function() {
+			alert('点击我');
+		})
+	})
+	window.addEventListener('load', function() {
+
+		alert(22);
+	})
+	document.addEventListener('DOMContentLoaded', function() {
+			alert(33);
+		})
+	// load 等页面内容全部加载完毕，包含页面dom元素 图片 flash  css 等等
+	// DOMContentLoaded 是DOM 加载完毕，不包含图片 falsh css 等就可以执行 加载速度比 load更快一些
+</script>
+
+<body>
+    <button>点击</button>
+</body>
+```
+
+### 调整窗口大小事件 resize
+```html
+<style>
+	div {
+		width: 200px;
+		height: 200px;
+		background-color: pink;
+	}
+</style>
+
+<body>
+    <script>
+        window.addEventListener('load', function() {
+            var div = document.querySelector('div');
+            window.addEventListener('resize', function() {
+                console.log(window.innerWidth);
+                console.log('变化了');
+                if (window.innerWidth <= 800) {
+                    div.style.display = 'none';
+                } else {
+                    div.style.display = 'block';
+                }
+            })
+        })
+    </script>
+    <div></div>
+</body>
+```
+
+### 定时器 setTimeout
+```html
+<script>
+	// 1. setTimeout 
+	// 语法规范：  window.setTimeout(调用函数, 延时时间);
+	// 1. 这个window在调用的时候可以省略
+	// 2. 这个延时时间单位是毫秒 但是可以省略，如果省略默认的是0
+	// 3. 这个调用函数可以直接写函数 还可以写 函数名 还有一个写法 '函数名()'
+	// 4. 页面中可能有很多的定时器，我们经常给定时器加标识符 （名字)
+	// setTimeout(function() {
+	//     console.log('时间到了');
+	// }, 2000);
+	function callback() {
+		console.log('爆炸了');
+	}
+	var timer1 = setTimeout(callback, 3000);
+	var timer2 = setTimeout(callback, 5000);
+	// setTimeout('callback()', 3000); // 我们不提倡这个写法
+</script>
+```
+注意：
+1.window可以省略。
+2.这个调用函数可以直接写函数，或者写函数名或者采取字符串‘函数名()'三种形式。第三种不推荐
+3.延迟的毫秒数省略默认是0，如果写，必须是毫秒。
+
+### 回调函数
+5秒后自动关闭广告
+```html
+<body>
+    <img src="images/ad.jpg" alt="" class="ad">
+    <script>
+        var ad = document.querySelector('.ad');
+        setTimeout(function() {
+            ad.style.display = 'none';
+        }, 5000);
+    </script>
+</body>
+```
+
+### 停止定时器 clearTimeout
+```html
+<body>
+    <button>点击停止定时器</button>
+    <script>
+        var btn = document.querySelector('button');
+        var timer = setTimeout(function() {
+            console.log('爆炸了');
+        }, 5000);
+        btn.addEventListener('click', function() {
+            clearTimeout(timer);
+        })
+    </script>
+</body>
+```
+
+### 定时器 setInterval
+setlnterval()方法重复调用一个函数，每隔这个时间，就去调用一次回调函数。
+```html
+<script>
+	// 1. setInterval 
+	// 语法规范：  window.setInterval(调用函数, 延时时间);
+	setInterval(function() {
+		console.log('继续输出');
+	}, 1000);
+	// 2. setTimeout  延时时间到了，就去调用这个回调函数，只调用一次 就结束了这个定时器
+	// 3. setInterval  每隔这个延时时间，就去调用这个回调函数，会调用很多次，重复调用这个函数
+</script>
+```
+
+#### 倒计时效果
+```html
+<body>
+    <div>
+        <span class="hour">1</span>
+        <span class="minute">2</span>
+        <span class="second">3</span>
+    </div>
+    <script>
+        // 1. 获取元素 
+        var hour = document.querySelector('.hour'); // 小时的黑色盒子
+        var minute = document.querySelector('.minute'); // 分钟的黑色盒子
+        var second = document.querySelector('.second'); // 秒数的黑色盒子
+        var inputTime = +new Date('2019-5-1 18:00:00'); // 返回的是用户输入时间总的毫秒数
+        countDown(); // 我们先调用一次这个函数，防止第一次刷新页面有空白 
+        // 2. 开启定时器
+        setInterval(countDown, 1000);
+        function countDown() {
+            var nowTime = +new Date(); // 返回的是当前时间总的毫秒数
+            var times = (inputTime - nowTime) / 1000; // times是剩余时间总的秒数 
+            var h = parseInt(times / 60 / 60 % 24); //时
+            h = h < 10 ? '0' + h : h;
+            hour.innerHTML = h; // 把剩余的小时给 小时黑色盒子
+            var m = parseInt(times / 60 % 60); // 分
+            m = m < 10 ? '0' + m : m;
+            minute.innerHTML = m;
+            var s = parseInt(times % 60); // 当前的秒
+            s = s < 10 ? '0' + s : s;
+            second.innerHTML = s;
+        }
+    </script>
+</body>
+```
+
+### 清除定时器 clearInteaval
+```html
+<body>
+    <button class="begin">开启定时器</button>
+    <button class="stop">停止定时器</button>
+    <script>
+        var begin = document.querySelector('.begin');
+        var stop = document.querySelector('.stop');
+        var timer = null; // 全局变量  null是一个空对象
+        begin.addEventListener('click', function() {
+            timer = setInterval(function() {
+                console.log('ni hao ma');
+            }, 1000);
+        })
+        stop.addEventListener('click', function() {
+            clearInterval(timer);
+        })
+    </script>
+</body>
+```
+
+#### 发送短信
+```html
+<body>
+    手机号码： <input type="number"> <button>发送</button>
+    <script>
+        // 按钮点击之后，会禁用 disabled 为true 
+        // 同时按钮里面的内容会变化， 注意 button 里面的内容通过 innerHTML修改
+        // 里面秒数是有变化的，因此需要用到定时器
+        // 定义一个变量，在定时器里面，不断递减
+        // 如果变量为0 说明到了时间，我们需要停止定时器，并且复原按钮初始状态
+        var btn = document.querySelector('button');
+        var time = 3; // 定义剩下的秒数
+        btn.addEventListener('click', function() {
+            btn.disabled = true;
+            var timer = setInterval(function() {
+                if (time == 0) {
+                    // 清除定时器和复原按钮
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.innerHTML = '发送';
+                } else {
+                    btn.innerHTML = '还剩下' + time + '秒';
+                    time--;
+                }
+            }, 1000);
+        })
+    </script>
+</body>
+```
+
+### this 指向问题
+```html
+<body>
+    <button>点击</button>
+    <script>
+        // this 指向问题 一般情况下this的最终指向的是那个调用它的对象
+        // 1. 全局作用域或者普通函数中this指向全局对象window（ 注意定时器里面的this指向window）
+        console.log(this);
+        function fn() {
+            console.log(this);
+        }
+        window.fn();
+        window.setTimeout(function() {
+            console.log(this);
+        }, 1000);
+        // 2. 方法调用中谁调用this指向谁
+        var o = {
+            sayHi: function() {
+                console.log(this); // this指向的是 o 这个对象
+            }
+        }
+        o.sayHi();
+        var btn = document.querySelector('button');
+        // btn.onclick = function() {
+        //     console.log(this); // this指向的是btn这个按钮对象
+        // }
+        btn.addEventListener('click', function() {
+                console.log(this); // this指向的是btn这个按钮对象
+            })
+            // 3. 构造函数中this指向构造函数的实例
+        function Fun() {
+            console.log(this); // this 指向的是fun 实例对象
+        }
+        var fun = new Fun();
+    </script>
+</body>
+```
+
+## JS 执行机制
+
+### JS 执行队列（同步/异步）
+同步任务：同步任务都在主线程上执行，形成一个执行栈。
+异步任务：JS的异步是通过回调函数实现的。一般而言，异步任务有以下三种类型
+1、普通事件，如click、resize等
+2、资源加载，如load、error等
+3、定时器，包括setlnterval、setTimeout等
+
+执行过程
+1.先执行执行栈中的同步任务。
+2.异步任务（回调函数）放入任务队列中。
+3.一旦执行栈中的所有同步任务执行完毕，系统就会按次序读取任务队列中的异步任务，于是被读取的异步任务结束等待状态，进入执行栈，开始执行。
+```html
+<body>
+    <script>
+        // 第一个问题
+        // console.log(1);
+        // setTimeout(function() {
+        //     console.log(3);
+        // }, 1000);
+        // console.log(2);
+        // 2. 第二个问题
+        // console.log(1);
+        // setTimeout(function() {
+        //     console.log(3);
+        // }, 0);
+        // console.log(2);
+        // 3. 第三个问题
+        console.log(1);
+        document.onclick = function() {
+            console.log('click');
+        }
+        console.log(2);
+        setTimeout(function() {
+            console.log(3)
+        }, 3000)
+    </script>
+</body>
+```

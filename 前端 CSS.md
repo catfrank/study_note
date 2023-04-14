@@ -1429,3 +1429,255 @@ visibility隐藏元素后，继续占有原来的位置
     </ul>
 </body>
 ```
+
+## nth-child 选择器
+```html
+<style>
+	/* 1.把所有的偶数 even的孩子选出来 */
+	ul li:nth-child(even) {
+		background-color: #ccc;
+	}
+	/* 2.把所有的奇数 odd的孩子选出来 */
+	ul li:nth-child(odd) {
+		background-color: gray;
+	}
+	/* 3.nth-child(n) 从0开始 每次加1 往后面计算  这里面必须是n 不能是其他的字母 选择了所有的孩子*/
+	/* ol li:nth-child(n) {
+		background-color: pink;
+	} */
+	/* 4.nth-child(2n)母选择了所有的偶数孩子 等价于 even*/
+	/* ol li:nth-child(2n) {
+		background-color: pink;
+	}
+	ol li:nth-child(2n+1) {
+		background-color: skyblue;
+	} */
+	/* ol li:nth-child(n+3) {
+		background-color: pink;
+	} */
+	ol li:nth-child(-n+3) {
+		background-color: pink;
+	}
+</style>
+
+<body>
+    <ul>
+        <li>我是第1个孩子</li>
+        <li>我是第2个孩子</li>
+        <li>我是第3个孩子</li>
+        <li>我是第4个孩子</li>
+        <li>我是第5个孩子</li>
+        <li>我是第6个孩子</li>
+        <li>我是第7个孩子</li>
+        <li>我是第8个孩子</li>
+    </ul>
+    <ol>
+        <li>我是第1个孩子</li>
+        <li>我是第2个孩子</li>
+        <li>我是第3个孩子</li>
+        <li>我是第4个孩子</li>
+        <li>我是第5个孩子</li>
+        <li>我是第6个孩子</li>
+        <li>我是第7个孩子</li>
+        <li>我是第8个孩子</li>
+    </ol>
+</body>
+```
+
+## nth-of-type 选择器
+```html
+<style>
+	ul li:first-of-type {
+		background-color: pink;
+	}
+	ul li:last-of-type {
+		background-color: pink;
+	}
+	ul li:nth-of-type(even) {
+		background-color: skyblue;
+	}
+	/* nth-child 会把所有的盒子都排列序号 */
+	/* 执行的时候首先看  :nth-child(1) 之后回去看 前面 div */
+	section div:nth-child(1) {
+		background-color: red;
+	}
+	 /* nth-of-type 会把指定元素的盒子排列序号 */
+	/* 执行的时候首先看 div指定的元素  之后回去看 :nth-of-type(1) 第几个孩子 */
+	section div:nth-of-type(1) {
+		background-color: blue;
+	}
+</style>
+```
+
+## 伪元素选择器
+before和after创建一个元素，但是属于行内元素
+新创建的这个元素在文档树中是找不到的，所以我们称为伪元素
+语法：element::before
+before和after必须有content属性
+before在父元素内容的前面创建元素，after在父元素内容的后面插入元素
+伪元素选择器和标签选择器一样，权重为1
+```html
+<style>
+	div {
+		width: 200px;
+		height: 200px;
+		background-color: pink;
+	}
+	/* div::before 权重是2 */
+	div::before {
+		/* 这个content是必须要写的 */
+		/* display: inline-block; */
+		content: '我';
+		/* width: 30px;
+		height: 40px;
+		background-color: purple; */
+	}
+	div::after {
+		content: '小猪佩奇';
+	}
+</style>
+
+<body>
+    <div>
+        是
+    </div>
+</body>
+```
+
+## 盒子模型
+```html
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+	div {
+		width: 200px;
+		height: 200px;
+		background-color: pink;
+		border: 20px solid red;
+		padding: 15px;
+		box-sizing: content-box;
+	}
+	p {
+		width: 200px;
+		height: 200px;
+		background-color: pink;
+		border: 20px solid red;
+		padding: 15px;
+		/* css3 盒子模型  盒子最终的大小就是 width  200 的大小 */
+		box-sizing: border-box;
+	}
+</style>
+
+<body>
+    <div>
+        小猪乔治
+    </div>
+    <p>
+        小猪佩奇
+    </p>
+</body>
+```
+
+## 图片模糊
+```html
+<style>
+	img {
+		/* blur是一个函数 小括号里面数值越大，图片越模糊 注意数值要加px单位 */
+		filter: blur(15px);
+	}
+	img:hover {
+		filter: blur(0);
+	}
+</style>
+
+<body>
+   <img src="images/pink.jpg" alt="">
+</body>
+```
+
+## calc 函数
+```html
+<style>
+	.father {
+		width: 300px;
+		height: 200px;
+		background-color: pink;
+	}
+	.son {
+		/* width: 150px; */
+		/* width: calc(150px + 30px); */
+		width: calc(100% - 30px);
+		height: 30px;
+		background-color: skyblue;
+	}
+</style>
+
+<body>
+    <!-- 需求我们的子盒子宽度永远比父盒子小30像素 -->
+    <div class="father">
+        <div class="son"></div>
+    </div>
+</body>
+```
+
+## 过渡
+```html
+<style>
+	div {
+		width: 200px;
+		height: 100px;
+		background-color: pink;
+		/* transition: 变化的属性 花费时间 运动曲线 何时开始; */
+		/* transition: width .5s ease 0s, height .5s ease 1s; */
+		/* 如果想要写多个属性，利用逗号进行分割 */
+		/* transition: width .5s, height .5s; */
+		/* 如果想要多个属性都变化，属性写all就可以了 */
+		/* transition: height .5s ease 1s; */
+		/* 谁做过渡，给谁加 */
+		transition: all 0.5s;
+	}
+	div:hover {
+		width: 400px;
+		height: 200px;
+		background-color: skyblue;
+	}
+</style>
+
+<body>
+    <div></div>
+</body>
+```
+
+### 进度条案例
+```html
+<style>
+	.bar {
+		width: 150px;
+		height: 15px;
+		border: 1px solid red;
+		border-radius: 7px;
+		padding: 1px;
+	}
+	.bar_in {
+		width: 50%;
+		height: 100%;
+		background-color: red;
+		/* 谁做过渡给谁加 */
+		transition: all .7s;
+	}
+	.bar:hover .bar_in {
+		width: 100%;
+	}
+</style>
+
+<body>
+    <div class="bar">
+        <div class="bar_in"></div>
+    </div>
+</body>
+```
+
+

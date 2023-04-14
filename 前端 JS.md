@@ -2998,6 +2998,8 @@ setlnterval()方法重复调用一个函数，每隔这个时间，就去调用�
 1.先执行执行栈中的同步任务。
 2.异步任务（回调函数）放入任务队列中。
 3.一旦执行栈中的所有同步任务执行完毕，系统就会按次序读取任务队列中的异步任务，于是被读取的异步任务结束等待状态，进入执行栈，开始执行。
+
+由于主线程不断的重复获得任务、执行任务、再获取任务、再执行，所以这种机制被称为事件循环(event loop)。
 ```html
 <body>
     <script>
@@ -3022,6 +3024,477 @@ setlnterval()方法重复调用一个函数，每隔这个时间，就去调用�
         setTimeout(function() {
             console.log(3)
         }, 3000)
+    </script>
+</body>
+```
+
+### location 对象
+
+#### 5秒后自动跳转页面
+```html
+<body>
+    <button>点击</button>
+    <div></div>
+    <script>
+        var btn = document.querySelector('button');
+        var div = document.querySelector('div');
+        btn.addEventListener('click', function() {
+            // console.log(location.href);
+            location.href = 'http://www.itcast.cn';
+        })
+        var timer = 5;
+        setInterval(function() {
+            if (timer == 0) {
+                location.href = 'http://www.itcast.cn';
+            } else {
+                div.innerHTML = '您将在' + timer + '秒钟之后跳转到首页';
+                timer--;
+            }
+        }, 1000);
+    </script>
+</body>
+```
+
+### 跳转页面
+```html
+<body>
+    <button>点击</button>
+    <script>
+        var btn = document.querySelector('button');
+        btn.addEventListener('click', function() {
+            // 记录浏览历史，所以可以实现后退功能
+            // location.assign('http://www.itcast.cn');
+            // 不记录浏览历史，所以不可以实现后退功能
+            // location.replace('http://www.itcast.cn');
+            location.reload(true);
+        })
+    </script>
+</body>
+```
+
+### 获取 URL 参数
+```html
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div></div>
+    <script>
+        console.log(location.search); // ?uname=andy
+        // 1.先去掉？  substr('起始的位置'，截取几个字符);
+        var params = location.search.substr(1); // uname=andy
+        console.log(params);
+        // 2. 利用=把字符串分割为数组 split('=');
+        var arr = params.split('=');
+        console.log(arr); // ["uname", "ANDY"]
+        var div = document.querySelector('div');
+        // 3.把数据写入div中
+        div.innerHTML = arr[1] + '欢迎您';
+    </script>
+</body>
+```
+
+### history 对象
+```html
+<body>
+    <a href="list.html">点击我去往列表页</a>
+    <button>前进</button>
+    <script>
+        var btn = document.querySelector('button');
+        btn.addEventListener('click', function() {
+            // history.forward();
+            history.go(1);
+        })
+    </script>
+</body>
+```
+
+## 网页特效
+
+### 缓慢动画
+```html
+<body>
+    <button>点击夏雨荷才走</button>
+    <span>夏雨荷</span>
+    <script>
+        // 缓动动画函数封装obj目标对象 target 目标位置
+        // 思路：
+        // 1. 让盒子每次移动的距离慢慢变小， 速度就会慢慢落下来。
+        // 2. 核心算法：(目标值 - 现在的位置) / 10 做为每次移动的距离 步长
+        // 3. 停止的条件是： 让当前盒子位置等于目标位置就停止定时器
+        function animate(obj, target) {
+            // 先清除以前的定时器，只保留当前的一个定时器执行
+            clearInterval(obj.timer);
+            obj.timer = setInterval(function() {
+                // 步长值写到定时器的里面
+                var step = (target - obj.offsetLeft) / 10;
+                if (obj.offsetLeft == target) {
+                    // 停止动画 本质是停止定时器
+                    clearInterval(obj.timer);
+                }
+                // 把每次加1 这个步长值改为一个慢慢变小的值  步长公式：(目标值 - 现在的位置) / 10
+                obj.style.left = obj.offsetLeft + step + 'px';
+            }, 15);
+        }
+        var span = document.querySelector('span');
+        var btn = document.querySelector('button');
+        btn.addEventListener('click', function() {
+                // 调用函数
+                animate(span, 500);
+            })
+            // 匀速动画 就是 盒子是当前的位置 +  固定的值 10 
+            // 缓动动画就是  盒子当前的位置 + 变化的值(目标值 - 现在的位置) / 10）
+    </script>
+</body>
+```
+
+### offset 属性
+```html
+<body>
+    <div class="father">
+        <div class="son"></div>
+    </div>
+    <div class="w"></div>
+    <script>
+        // offset 系列
+        var father = document.querySelector('.father');
+        var son = document.querySelector('.son');
+        // 1.可以得到元素的偏移 位置 返回的不带单位的数值  
+        console.log(father.offsetTop);
+        console.log(father.offsetLeft);
+        // 它以带有定位的父亲为准  如果么有父亲或者父亲没有定位 则以 body 为准
+        console.log(son.offsetLeft);
+        var w = document.querySelector('.w');
+        // 2.可以得到元素的大小 宽度和高度 是包含padding + border + width 
+        console.log(w.offsetWidth);
+        console.log(w.offsetHeight);
+        // 3. 返回带有定位的父亲 否则返回的是body
+        console.log(son.offsetParent); // 返回带有定位的父亲 否则返回的是body
+        console.log(son.parentNode); // 返回父亲 是最近一级的父亲 亲爸爸 不管父亲有没有定位
+    </script>
+</body>
+```
+
+### offset 和 style 的区别
+offset
+offset可以得到任意样式表中的样式值
+offset系列获得的数值是没有单位的
+offsetWidth包含padding+border+width
+offsetWidth等属性是只读属性，只能获取不能赋值
+所以，我们想要获取元素大小位置，用offset更合适
+
+style
+stye只能得到行内样式表中的样式值
+style.width获得的是带有单位的字符串
+style.width获得不包含paddingi和border的值
+style.width是可读写属性，可以获取他可以赋值
+所以，我们想要给元素更改值，则需要用style改变
+
+### client 属性
+```html
+<style>
+	div {
+		width: 200px;
+		height: 200px;
+		background-color: pink;
+		border: 10px solid red;
+		padding: 10px;
+	}
+</style>
+
+<body>
+    <div></div>
+    <script>
+        // client 宽度 和我们offsetWidth 最大的区别就是 不包含边框
+        var div = document.querySelector('div');
+        console.log(div.clientWidth);
+    </script>
+</body>
+```
+
+### 立即执行函数
+立即执行函数（(function() {})()    或者  (function(){}());
+主要作用：创建一个独立的作用域。避免了命名冲突问题
+```html
+<script>
+	// 1.立即执行函数: 不需要调用，立马能够自己执行的函数
+	function fn() {
+		console.log(1);
+	}
+	fn();
+	// 2. 写法 也可以传递参数进来
+	// 1.(function() {})()    或者  2. (function(){}());
+	(function(a, b) {
+		console.log(a + b);
+		var num = 10;
+	})(1, 2); // 第二个小括号可以看做是调用函数
+	(function sum(a, b) {
+		console.log(a + b);
+		var num = 10; // 局部变量
+	}(2, 3));
+	// 3. 立即执行函数最大的作用就是 独立创建了一个作用域, 里面所有的变量都是局部变量 不会有命名冲突的情况
+</script>
+```
+
+### scroll 属性
+使用Scroll系列的相关属性可以动态的得到该元素的大小、滚动距离等。
+```html
+<style>
+	div {
+		width: 200px;
+		height: 200px;
+		background-color: pink;
+		border: 10px solid red;
+		padding: 10px;
+		overflow: auto;
+	}
+</style>
+
+<body>
+    <div>
+        我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容 我是内容
+    </div>
+    <script>
+        // scroll 系列
+        var div = document.querySelector('div');
+        console.log(div.scrollHeight);
+        console.log(div.clientHeight);
+        // scroll滚动事件当我们滚动条发生变化会触发的事件
+        div.addEventListener('scroll', function() {
+            console.log(div.scrollTop);
+
+        })
+    </script>
+</body>
+```
+
+#### 淘宝侧边栏
+```html
+<style>
+	.slider-bar {
+		position: absolute;
+		left: 50%;
+		top: 300px;
+		margin-left: 600px;
+		width: 45px;
+		height: 130px;
+		background-color: pink;
+	}
+	
+	.w {
+		width: 1200px;
+		margin: 10px auto;
+	}
+	
+	.header {
+		height: 150px;
+		background-color: purple;
+	}
+	
+	.banner {
+		height: 250px;
+		background-color: skyblue;
+	}
+	
+	.main {
+		height: 1000px;
+		background-color: yellowgreen;
+	}
+	
+	span {
+		display: none;
+		position: absolute;
+		bottom: 0;
+	}
+</style>
+
+<body>
+    <div class="slider-bar">
+        <span class="goBack">返回顶部</span>
+    </div>
+    <div class="header w">头部区域</div>
+    <div class="banner w">banner区域</div>
+    <div class="main w">主体部分</div>
+    <script>
+        //1. 获取元素
+        var sliderbar = document.querySelector('.slider-bar');
+        var banner = document.querySelector('.banner');
+        // banner.offestTop 就是被卷去头部的大小 一定要写到滚动的外面
+        var bannerTop = banner.offsetTop
+            // 当我们侧边栏固定定位之后应该变化的数值
+        var sliderbarTop = sliderbar.offsetTop - bannerTop;
+        // 获取main 主体元素
+        var main = document.querySelector('.main');
+        var goBack = document.querySelector('.goBack');
+        var mainTop = main.offsetTop;
+        // 2. 页面滚动事件 scroll
+        document.addEventListener('scroll', function() {
+            // console.log(11);
+            // window.pageYOffset 页面被卷去的头部
+            // console.log(window.pageYOffset);
+            // 3 .当我们页面被卷去的头部大于等于了 172 此时 侧边栏就要改为固定定位
+            if (window.pageYOffset >= bannerTop) {
+                sliderbar.style.position = 'fixed';
+                sliderbar.style.top = sliderbarTop + 'px';
+            } else {
+                sliderbar.style.position = 'absolute';
+                sliderbar.style.top = '300px';
+            }
+            // 4. 当我们页面滚动到main盒子，就显示 goback模块
+            if (window.pageYOffset >= mainTop) {
+                goBack.style.display = 'block';
+            } else {
+                goBack.style.display = 'none';
+            }
+        })
+    </script>
+</body>
+```
+
+### offset client scroll 对比
+三大系列大小对比
+element.offsetWidth
+返回自身包括padding、边框、内容区的宽度，返回数值不带单位
+element.clientWidth
+返回自身包括padding、内容区的宽度，不含边框，返回数值不带单位
+element.scrollWidth
+返回自身实际的宽度，不含边框，返回数值不带单位
+
+offset系列经常用于获得元素位置offsetLeft offsetTop
+client经常用于获取元素大小clientWidth clientHeight
+scroll经常用于获取滚动距离scrollTop scrollLeft
+注意页面滚动的距离通过window.pagexoffset获得
+
+### mouseover 和 mouseenter
+当鼠标移动到元素上时就会触发mouseenter事件
+类似mouseover,它们两者之间的差别是
+mouseover鼠标经过自身盒子会触发，经过子盒子还会触发。mouseenter只会经过自身盒子触发，mouseenter不会冒泡
+跟mouseentert搭配鼠标离开mouseleave同样不会冒泡
+```html
+<style>
+	.father {
+		width: 300px;
+		height: 300px;
+		background-color: pink;
+		margin: 100px auto;
+	}
+	
+	.son {
+		width: 200px;
+		height: 200px;
+		background-color: purple;
+	}
+</style>
+
+<body>
+    <div class="father">
+        <div class="son"></div>
+    </div>
+    <script>
+        var father = document.querySelector('.father');
+        var son = document.querySelector('.son');
+        father.addEventListener('mouseenter', function() {
+            console.log(11);
+
+        })
+    </script>
+</body>
+```
+
+### 动画函数
+实现步骤：
+1.获得盒子当前位置
+2.让盒子在当前位置加上1个移动距离
+3.利用定时器不断重复这个操作
+4.加一个结束定时器的条件
+5.注意此元素需要添加定位，才能使用element..style.left
+```html
+<style>
+	div {
+		position: absolute;
+		left: 0;
+		width: 100px;
+		height: 100px;
+		background-color: pink;
+	}
+</style>
+
+<body>
+    <div></div>
+    <script>
+        var div = document.querySelector('div');
+        var timer = setInterval(function() {
+            if (div.offsetLeft >= 400) {
+                // 停止动画 本质是停止定时器
+                clearInterval(timer);
+            }
+            div.style.left = div.offsetLeft + 1 + 'px';
+        }, 30);
+    </script>
+</body>
+```
+
+#### 封装动画函数
+```html
+<body>
+    <div></div>
+    <span>夏雨荷</span>
+    <script>
+        // 简单动画函数封装obj目标对象 target 目标位置
+        function animate(obj, target) {
+            var timer = setInterval(function() {
+                if (obj.offsetLeft >= target) {
+                    // 停止动画 本质是停止定时器
+                    clearInterval(timer);
+                }
+                obj.style.left = obj.offsetLeft + 1 + 'px';
+            }, 30);
+        }
+        var div = document.querySelector('div');
+        var span = document.querySelector('span');
+        // 调用函数
+        animate(div, 300);
+        animate(span, 200);
+    </script>
+</body>
+```
+
+#### 不同元素不同的定时器
+```html
+<body>
+    <button>点击夏雨荷才走</button>
+    <div></div>
+    <span>夏雨荷</span>
+    <script>
+        // var obj = {};
+        // obj.name = 'andy';
+        // 简单动画函数封装obj目标对象 target 目标位置
+        // 给不同的元素指定了不同的定时器
+        function animate(obj, target) {
+            // 当我们不断的点击按钮，这个元素的速度会越来越快，因为开启了太多的定时器
+            // 解决方案就是 让我们元素只有一个定时器执行
+            // 先清除以前的定时器，只保留当前的一个定时器执行
+            clearInterval(obj.timer);
+            obj.timer = setInterval(function() {
+                if (obj.offsetLeft >= target) {
+                    // 停止动画 本质是停止定时器
+                    clearInterval(obj.timer);
+                }
+                obj.style.left = obj.offsetLeft + 1 + 'px';
+            }, 30);
+        }
+        var div = document.querySelector('div');
+        var span = document.querySelector('span');
+        var btn = document.querySelector('button');
+        // 调用函数
+        animate(div, 300);
+        btn.addEventListener('click', function() {
+            animate(span, 200);
+        })
     </script>
 </body>
 ```
